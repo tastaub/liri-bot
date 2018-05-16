@@ -6,11 +6,21 @@ var spotify = new Spotify(config.spotify);
 
 var query = process.argv[3];
 
+var search;
 
+var checkQuery = function()  {
+  if(query === "")  {
+    search = "I saw the sun"
+  } else  {
+    search = query
+  }
+  console.log(search);
+}
 
+checkQuery();
 
 var spotifyCall = {
-  getSong: spotify.search({type: "track", query: query }, function(err, data) {
+  getSong: spotify.search({type: "track", query: "I want it that way" }, function(err, data) {
       if (err) {
         return console.log('Error occurred: ' + err);
       }
