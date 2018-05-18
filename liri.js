@@ -1,4 +1,4 @@
-    
+var fs = require('fs');   
 var keys = require('dotenv').config();
 
 var config = require("./key");
@@ -11,12 +11,13 @@ var T = new Twitter(config.twitter);
 
 var request = require("request");
 
+var enter = process.argv[2];
 var query = process.argv[3];    
 
 
 //Twitter
 var TwitterCall = function(){
-    
+    log()
     T.get('statuses/user_timeline', {screen_name: "@trubacon", count: 20}, function(error, tweets, response) {
         
 
@@ -25,10 +26,17 @@ var TwitterCall = function(){
             var user = tweets[i].user.name;
             var time = tweets[i].created_at;
 
-            console.log(tweet);
-            console.log(user);
-            console.log(time);
-            console.log("=========================");
+            console.log(`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------
+${tweet}
+                            
+        ${user}
+                
+${time}
+--------------------------------
+||||||||||||||||||||||||||||||||
+            `)
         }
 
     })
@@ -36,7 +44,7 @@ var TwitterCall = function(){
 
 //Spotify
 var spotifyCall = function(){
-  
+  log()
     if(query === undefined)  {
         spotify.search({type: "track", query: "No Scrubs" }, function(err, data) {
         
@@ -54,14 +62,22 @@ var spotifyCall = function(){
           var sample = response.external_urls.spotify;
           var song = response.name;
       
-          console.log('=============================')
-          console.log('=============================')
-          console.log(artist);
-          console.log(song);
-          console.log(sample);
-          console.log(album);
-          console.log('=============================')
-          console.log('=============================')
+console.log(`
+
+***************************************
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+            
+            ${artist}
+            
+            ${song}
+            
+            ${album}
+
+${sample}
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+****************************************
+`)
       
       
       
@@ -85,14 +101,22 @@ var spotifyCall = function(){
           var sample = response.external_urls.spotify;
           var song = response.name;
       
-          console.log('=============================')
-          console.log('=============================')
-          console.log(artist);
-          console.log(song);
-          console.log(sample);
-          console.log(album);
-          console.log('=============================')
-          console.log('=============================')
+          console.log(`
+
+          ***************************************
+          $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+                      
+                      ${artist}
+                      
+                      ${song}
+                      
+                      ${album}
+          
+          ${sample}
+          
+          $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+          ****************************************
+          `)
       
       
       
@@ -105,9 +129,9 @@ var spotifyCall = function(){
 
 
     var movieCall = function(){
-        
+        log()
         if(query === undefined)  {
-            request("http://www.omdbapi.com/?apikey=trilogy&plot=short&t=" + "Mr Nobody", function(error, response, body)  {
+            request("http://www.omdbapi.com/?apikey=trilogy&plot=short&t=" + "Elf", function(error, response, body)  {
     
             var results = JSON.parse(body);
             var title = results.Title;
@@ -126,18 +150,27 @@ var spotifyCall = function(){
             var plot = results.Plot;
             var actors = results.Actors;
     
-            console.log("========================================")
-            console.log("========================================")
-            console.log(title);
-            console.log(year);
-            console.log(imdb);
-            console.log(rt);
-            console.log(country);
-            console.log(lang);
-            console.log(plot);
-            console.log(actors);
-            console.log("========================================")
-            console.log("========================================")
+console.log(`
+#################################
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+           
+        Title: ${title}
+        
+        Year: ${year}
+        
+        IMDB Rating ${imdb}
+        Rotten Tomatoes: ${rt}
+        
+        Country: ${country}
+        Language: ${lang}
+
+Plot: ${plot}
+    
+        Actors: ${actors}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+##################################
+`)
             
         })
         } else  {
@@ -160,26 +193,59 @@ var spotifyCall = function(){
             var plot = results.Plot;
             var actors = results.Actors;
     
-            console.log("========================================")
-            console.log("========================================")
-            console.log(title);
-            console.log(year);
-            console.log(imdb);
-            console.log(rt);
-            console.log(country);
-            console.log(lang);
-            console.log(plot);
-            console.log(actors);
-            console.log("========================================")
-            console.log("========================================")
-            
+console.log(`
+#################################
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+           
+        Title: ${title}
+        
+        Year: ${year}
+        
+        IMDB Rating ${imdb}
+        Rotten Tomatoes: ${rt}
+        
+        Country: ${country}
+        Language: ${lang}
+
+Plot: ${plot}
+    
+        Actors: ${actors}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+##################################
+`)
         })
         }
             
     }
 
+
+var doIt = function()  {
+    fs.readFile('random.txt', 'utf-8', function(err, data)  {
+        if(err)  {
+            console.log(err)
+        }
+        var x = data.split(',')
+        enter = x[0].trim();
+        query = x[1].trim();
+        getCall();
+    })
+}
+
+function log() {
+
+    fs.appendFile('./log.txt', enter + " " + query + ", ", function(err) {
+
+        if (err) {
+            console.log(err);
+        }
+
+    });
+};
+
+
  var getCall = function() {
-    var enter = process.argv[2];
+    
 
     if(enter === "my-tweets")  {
         TwitterCall();
@@ -187,6 +253,8 @@ var spotifyCall = function(){
         spotifyCall();  
     }  else if(enter === "movie-this")  {
         movieCall();
+    } else if(enter === "do-what-it-says")  {
+        doIt();
     }
  }
  getCall();

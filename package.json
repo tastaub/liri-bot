@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^5.0.1",
+    "fs": "0.0.1-security",
     "node-spotify-api": "^1.0.7",
     "npm": "^6.0.1",
     "request": "^2.85.0",
